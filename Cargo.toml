@@ -1,0 +1,12 @@
+[package]
+name = "smb_log_format"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rmp-serde = "1.1.2"
+serde = { version = "1.0.194", features = ["derive"] }
+thiserror = "1.0.56"
+varint-rs = { version = "2.2.0", features=["std"], default-features = false }
