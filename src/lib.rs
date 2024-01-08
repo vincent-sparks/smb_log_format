@@ -29,6 +29,9 @@ pub enum ModLogAction {
 #[derive(Serialize, Deserialize)]
 pub struct ModLogMessage {
     pub id: u64,
+    pub author_id: u64,
+    pub author_name: String,
+    pub author_discrim: u16,
     pub content: String,
     pub attachments: Vec<String>,
 }
