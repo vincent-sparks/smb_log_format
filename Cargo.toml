@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 rmp-serde = "1.1.2"
 serde = { version = "1.0.194", features = ["derive"] }
-thiserror = "1.0.56"
+thiserror = "1"
 varint-rs = { version = "2.2.0", features=["std"], default-features = false }
