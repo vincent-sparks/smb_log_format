@@ -36,7 +36,7 @@ pub struct ModLogMessage {
 #[derive(Error, Debug)]
 pub enum EncodeError {
     Io(#[from] std::io::Error),
-    Serde(#[from] rmp_serde::encode::Error),
+    Serde(#[from] serde_json::Error),
 }
 
 impl std::fmt::Display for EncodeError {
@@ -57,7 +57,7 @@ impl std::fmt::Display for EncodeError {
 #[derive(Error, Debug)]
 pub enum DecodeError {
     Io(#[from] std::io::Error),
-    Serde(#[from] rmp_serde::decode::Error),
+    Serde(#[from] serde_json::Error),
 }
 
 impl std::fmt::Display for DecodeError {
@@ -75,7 +75,9 @@ impl std::fmt::Display for DecodeError {
     }
 }
 
-impl ModLogMessage {
+// binary mod log format (messagepack)
+/*
+impl ModLogEntry {
     pub fn read(mut f: &mut dyn std::io::Read) -> Result<Self, DecodeError> {
         let count = f.read_usize_varint()?;
         let mut buf = vec![0u8; count]; // i could do this more efficiently with a boxed slice but not
@@ -89,6 +91,20 @@ impl ModLogMessage {
         let data = rmp_serde::to_vec(self)?;
         f.write_usize_varint(data.len())?;
         f.write_all(&data)?;
+        Ok(())
+    }
+}
+*/
+
+impl ModLogEntry {
+    pub fn read(f: &mut dyn std::io::BufRead) -> Result<Self, DecodeError> {
+        let mut s = String::new();
+        f.read_line(&mut s)?;
+        Ok(serde_json::from_slice(s.as_bytes())?)
+    }
+    pub fn write(&self, f: &mut dyn std::io::Write) -> Result<(), EncodeError> {
+        serde_json::to_writer(&mut *f, self)?;
+        f.write_all(b"\n")?;
         Ok(())
     }
 }
